@@ -25,13 +25,20 @@ def _print_platforms(results) -> None:
     print("\n--- Registro em plataformas ---")
     for r in results:
         status = "?" if not r.checked else ("SIM" if r.registered else "não")
-        line = f"  {r.name:<12} disponível={r.available} checado={r.checked}"
+        line = f"  {r.name:<14} disponível={r.available} checado={r.checked}"
         if r.checked:
             line += f" registrado={status}"
         line += f" | {r.detail}"
         print(line)
+        if r.display_name or r.username:
+            extra = r.display_name + (f" (@{r.username})" if r.username else "")
+            print(f"     → dono: {extra}")
         if r.terms_note:
             print(f"     ⚠ {r.terms_note}")
+        if r.manual_steps:
+            print("     passo-a-passo:")
+            for step in r.manual_steps.split("\n"):
+                print(f"       {step}")
 
 
 def main(argv=None) -> int:

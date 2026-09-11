@@ -6,8 +6,10 @@ Author: Diogo Damasceno
 License: MIT
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Provides-Extra: telegram
 Requires-Dist: telethon; extra == "telegram"
+Dynamic: license-file
 
 # numrecon
 
@@ -46,7 +48,7 @@ numrecon 11999998888 --json
 numrecon --self-test
 ```
 
-### Telegram (opcional)
+### Telegram (opcional) — retorna nome + @username
 
 1. Crie um app em https://my.telegram.org (api_id, api_hash).
 2. Exporte como variáveis de ambiente e rode:
@@ -57,14 +59,22 @@ export TG_API_HASH=seu_hash
 numrecon 11999998888 --platforms
 ```
 
-A checagem usa `contacts.importContacts` (API oficial) — nunca faz spam nem
-contorna captcha. Na primeira execução você faz login na sua conta.
+A checagem usa `contacts.importContacts` (API oficial) e, para o seu número,
+devolve **nome + @username da conta vinculada** — auto-auditoria legítima.
+Nunca faz spam nem contorna captcha. Na primeira execução você faz login.
 
-### WhatsApp
+### WhatsApp / Instagram — checklist manual (sem automação)
 
-Sem API oficial de checagem. **Por design não automatizamos** (vira enumeração
-de números, contra os ToS). O relatório indica o método manual seguro: adicione
-o contato no seu próprio WhatsApp e veja status/foto.
+Não há API oficial de lookup por telefone. Automatizar vira enumeração de
+terceiros (viola ToS). O `--platforms` imprime o passo-a-passo seguro:
+
+- **WhatsApp**: adicione o contato no app e veja foto/status/última vez.
+- **Instagram**: "Descobrir pessoas" > sincronizar contatos no app.
+
+### Breach / vazamentos
+
+Só por **E-MAIL** via HaveIBeenPwned (oficial, grátis) — nunca por telefone.
+Bases de vazamento por telefone não são cruzadas (acesso/uso pode ser ilegal).
 
 ## Limitações (intencionais)
 
