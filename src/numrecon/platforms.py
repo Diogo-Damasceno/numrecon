@@ -169,8 +169,62 @@ register(Checker(key="instagram", label="Instagram", fn=_instagram_check))
 
 
 # ---------------------------------------------------------------------------
-# Breach / vazamentos — só por E-MAIL via HaveIBeenPwned (oficial). Não por tel.
+# ABR Telecom — operadora atual (portabilidade) via consulta oficial.
+# hCaptcha: fluxo manual-assistido (você resolve, cola o token).
 # ---------------------------------------------------------------------------
+def _carrier_check(e164: str, creds: dict) -> PlatformResult:
+    from .abr import consulta as abr_consulta, challenge_url as abr_challenge
+
+    res = PlatformResult(name="Operadora (ABR Telecom)")
+    res.terms_note = (
+        "Fonte oficial da portabilidade BR. Exige hCaptcha — fluxo manual: "
+        "você resolve no navegador e cola o token. Legítimo p/ seu próprio número."
+    )
+    national = e164.lstrip("+")
+    if not national.startswith("55"):
+        res.detail = "só disponível para números BR (+55)"
+        return res
+    token = creds.get("abr_hcaptcha_token")
+    if not token:
+        res.available = True
+        res.checked = False
+        res.detail = "token hCaptcha ausente"
+        res.manual_steps = (
+            f"1) Abra e resolva o captcha: {abr_challenge()}\n"
+            "2) Copie o h-captcha-response (via devtools/extensão hCaptcha).\n"
+            "3) Rode: numrecon <numero> --carrier <TOKEN>"
+        )
+        return res
+    try:
+        r = abr_consulta(national[2:], token)
+    except Exception as e:  # noqa: BLE001
+        res.detail = f"erro ABR: {type(e).__name__}: {e}"
+        return res
+    res.available = True
+    res.checked = True
+    if r.get("carrier"):
+        res.registered = True
+        res.display_name = r["carrier"]
+        res.detail = f"operadora: {r['carrier']}"
+        if r.get("legal_name"):
+            res.username = r["legal_name"]
+            res.detail += f" | razão social: {r['legal_name']}"
+        if r.get("date"):
+            res.detail += f" | desde: {r['date']}"
+    else:
+        res.registered = False
+        res.detail = r.get("raw") or "sem resultado"
+    return res
+
+
+register(
+    Checker(
+        key="carrier",
+        label="Operadora (ABR Telecom)",
+        needs_creds=["abr_hcaptcha_token"],
+        fn=_carrier_check,
+    )
+)
 def _breach_check(e164: str, creds: dict) -> PlatformResult:
     res = PlatformResult(name="Breach (HIBP)")
     res.terms_note = (

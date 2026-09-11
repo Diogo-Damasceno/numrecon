@@ -58,6 +58,21 @@ terceiros (viola ToS). O `--platforms` imprime o passo-a-passo seguro:
 - **WhatsApp**: adicione o contato no app e veja foto/status/última vez.
 - **Instagram**: "Descobrir pessoas" > sincronizar contatos no app.
 
+### Operadora atual (ABR Telecom) — fonte oficial da portabilidade BR
+
+Devolve a operadora **de fato** (pós-portabilidade) + razão social. O site
+exige hCaptcha, então o fluxo é **manual-assistido** (seu número, dentro dos ToS):
+
+```bash
+# 1) mostra a URL do desafio hCaptcha
+numrecon 11999998888 --carrier
+
+# 2) resolva no navegador, copie o h-captcha-response e rode:
+numrecon 11999998888 --carrier <TOKEN>
+```
+
+Não contornamos o captcha nem automatizamos em massa.
+
 ### Breach / vazamentos
 
 Só por **E-MAIL** via HaveIBeenPwned (oficial, grátis) — nunca por telefone.
@@ -65,8 +80,8 @@ Bases de vazamento por telefone não são cruzadas (acesso/uso pode ser ilegal).
 
 ## Limitações (intencionais)
 
-- **Operadora exata não é inferida offline.** A portabilidade numérica torna
-  qualquer inferência por faixa de números falsa. Isso é documentado, não bug.
+- **Operadora offline** só indica indisponibilidade (a real vem da ABR Telecom).
+  A portabilidade numérica torna qualquer inferência por faixa falsa.
 - Cobertura de DDD/país é a mais comum; base local pode estar incompleta.
 
 ## Testes
