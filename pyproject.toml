@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "numrecon"
+version = "0.1.0"
+description = "Self-OSINT: analisa o seu próprio número de telefone (prefixo/país/tipo) e descobre registro em plataformas."
+authors = [{ name = "Diogo Damasceno" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+telegram = ["telethon"]
+
+[project.scripts]
+numrecon = "numrecon.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

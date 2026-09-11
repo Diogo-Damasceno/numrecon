@@ -1,0 +1,2 @@
+[console_scripts]
+numrecon = numrecon.cli:main
